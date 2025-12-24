@@ -1,5 +1,5 @@
 process align {
-    conda 'bioconda::bwa bioconda::samtools'
+    conda 'bioconda::bwa=0.7.17 bioconda::samtools'
     container 'glebusasha/bwa_samtools'
     publishDir 'results/align'
     tag "$sid"
