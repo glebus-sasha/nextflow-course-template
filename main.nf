@@ -1,54 +1,60 @@
 #!/usr/bin/env nextflow
-include { refindex } from './processes/refindex.nf'
-include { qcontrol } from './processes/qcontrol.nf'
-include { align    } from './processes/align.nf'
-include { faindex  } from './processes/faindex.nf'
-include { bamindex } from './processes/bamindex.nf'
-include { varcall  } from './processes/varcall.nf'
-include { flagstat } from './processes/flagstat.nf'
-include { bcfstats } from './processes/bcfstats.nf'
-include { report   } from './processes/report.nf'
+include { refindex  } from './processes/refindex.nf'
+include { qcontrol  } from './processes/qcontrol.nf'
+include { align     } from './processes/align.nf'
+include { faindex   } from './processes/faindex.nf'
+include { bamindex  } from './processes/bamindex.nf'
+include { varcall   } from './processes/varcall.nf'
+include { flagstat  } from './processes/flagstat.nf'
+include { bcfstats  } from './processes/bcfstats.nf'
+include { report    } from './processes/report.nf'
 
-reads = Channel.fromFilePairs(params.reads)
-reference = Channel.fromPath(params.reference).collect()
-x = reference.map {it -> [[], it, ['bla']]}.view()
 
-workflow simple{
+
+workflow refprepare {
+    take:
+    reference
+    
+    main:
     refindex(reference)
-    qcontrol(reads)
-    align(reference, qcontrol.out[0], refindex.out)
     faindex(reference)
+
+    emit:
+    bwaindex = refindex.out
+}
+workflow align_varcall {
+    take:
+    reference 
+    bwaindex
+    reads
+    
+    main:
+    qcontrol(reads)
+    align(
+        reference, 
+        qcontrol.out[0], 
+        bwaindex
+    )
     bamindex(align.out)
-    varcall(reference, align.out.join(bamindex.out), faindex.out)
+    varcall(
+        reference, 
+        align.out.join(bamindex.out),
+        bwaindex
+    )
     flagstat(align.out)
     bcfstats(varcall.out)
-        
-    report(
-        qcontrol.out.json.
-        mix(flagstat.out.map{it -> it[1]}).
-        mix(bcfstats.out.map{it -> it[1]}).collect()
-        )
+    report(    
+        qcontrol.out.json
+        .mix( flagstat.out.map{ it -> it[1] } )
+        .mix( bcfstats.out.map{ it -> it[1] } )
+        .collect()
+    )
+    emit:
+    varcall = varcall.out
 }
-
-workflow show_off{
-
-    reference | 
-        refindex & faindex
-    reads | qcontrol
-    
-    align(reference, qcontrol.out[0], refindex.out) |
-        bamindex & flagstat
-    varcall(reference, align.out.join(bamindex.out), faindex.out) |
-        bcfstats
-        
-    report(
-        qcontrol.out.json                           |
-        mix(flagstat.out.map{it -> it[1]})          |
-        mix(bcfstats.out.map{it -> it[1]})          |
-        collect
-        )
-}
-
-workflow{
-    simple()
+workflow {
+    reads = channel.fromFilePairs(params.reads)
+    reference = channel.fromPath(params.reference).collect()
+    refprepare(reference)
+    align_varcall(reference, refprepare.out.bwaindex, reads)
 }
