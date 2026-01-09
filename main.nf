@@ -11,6 +11,8 @@ include { report   } from './processes/report.nf'
 
 reads = Channel.fromFilePairs(params.reads)
 reference = Channel.fromPath(params.reference).collect()
+x = reference.map {it -> [[], it, ['bla']]}.view()
+
 workflow simple{
     refindex(reference)
     qcontrol(reads)
@@ -48,5 +50,5 @@ workflow show_off{
 }
 
 workflow{
-    show_off()
+    simple()
 }
