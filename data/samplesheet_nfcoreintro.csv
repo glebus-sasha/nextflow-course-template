@@ -1,4 +1,4 @@
 sample,fastq_1,fastq_2
-SAMPLE1_PE,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R2.fastq.gz
-SAMPLE2_PE,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample2_R1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample2_R2.fastq.gz
-SAMPLE3_SE,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R1.fastq.gz,
+sample1,https://github.com/glebus-sasha/nextflow-course-template/raw/refs/heads/main/data/sample1_R1.fastq.gz,https://github.com/glebus-sasha/nextflow-course-template/raw/refs/heads/main/data/sample1_R2.fastq.gz
+sample2,https://github.com/glebus-sasha/nextflow-course-template/raw/refs/heads/main/data/sample2_R1.fastq.gz,https://github.com/glebus-sasha/nextflow-course-template/raw/refs/heads/main/data/sample2_R2.fastq.gz
+sample3,https://github.com/glebus-sasha/nextflow-course-template/raw/refs/heads/main/data/sample3_R1.fastq.gz
