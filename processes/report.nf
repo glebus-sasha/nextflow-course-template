@@ -1,7 +1,7 @@
 process report {
     conda 'bioconda::multiqc'
     container 'staphb/multiqc:latest'
-    publishDir 'results/report', mode: 'copy'
+    //publishDir 'results/report', mode: 'copy'
 
     input:
     path files
