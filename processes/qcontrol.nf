@@ -9,7 +9,7 @@ process qcontrol {
     tuple val(sid), path(reads)
     
     output:
-    tuple val(sid), path("${sid}_R1.fq"), path("${sid}_R2.fq")
+    tuple val(sid), path("${sid}_trimmed_R1.fq"), path("${sid}_trimmed_R2.fq")
     path("*.json"), emit: json
     
     script:
@@ -17,8 +17,8 @@ process qcontrol {
     fastp \
         --in1 ${reads[0]} \
         --in2 ${reads[1]}\
-        --out1 "${sid}_R1.fq" \
-        --out2 "${sid}_R2.fq" \
+        --out1 "${sid}_trimmed_R1.fq" \
+        --out2 "${sid}_trimmed_R2.fq" \
         --html ${sid}.fastp_stats.html \
         --json ${sid}.fastp_stats.json  
     """
